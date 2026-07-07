@@ -3,11 +3,10 @@ import { Elysia, t } from 'elysia'
 
 import { ErrorModel } from './error'
 
-const adminJwtSecret =
-  Bun.env.ADMIN_JWT_SECRET ?? Bun.env.JWT_SECRET ?? 'elysia-demo-admin-secret-change-me'
+const jwtSecret = Bun.env.JWT_SECRET ?? 'elysia-demo-secret-change-me'
 
-if (Bun.env.NODE_ENV === 'production' && !Bun.env.ADMIN_JWT_SECRET && !Bun.env.JWT_SECRET) {
-  throw new Error('ADMIN_JWT_SECRET or JWT_SECRET is required in production')
+if (Bun.env.NODE_ENV === 'production' && !Bun.env.JWT_SECRET) {
+  throw new Error('JWT_SECRET is required in production')
 }
 
 const bearerPrefix = 'Bearer '
@@ -24,7 +23,7 @@ export namespace AdminAuthModel {
 export const adminJwtPlugin = new Elysia({ name: 'admin-jwt-plugin' }).use(
   jwt({
     name: 'adminJwt',
-    secret: adminJwtSecret,
+    secret: jwtSecret,
     schema: AdminAuthModel.jwtPayload,
     exp: '7d'
   })

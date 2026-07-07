@@ -1,8 +1,7 @@
 import { openapi } from '@elysia/openapi'
 import { Elysia } from 'elysia'
 
-import { health } from './modules/health'
-import { user } from './modules/user'
+import { modules } from './modules'
 import { errorHandler } from './plugins/error'
 
 export const app = new Elysia()
@@ -52,7 +51,6 @@ export const app = new Elysia()
       }
     }
   )
-  .use(health)
-  .use(user)
+  .use(modules)
 
 export type App = typeof app

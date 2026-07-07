@@ -36,12 +36,10 @@ Configure Redis with:
 REDIS_URL=redis://localhost:6379
 ```
 
-Configure JWT with module-specific secrets, or keep a shared fallback secret:
+Configure JWT with:
 
 ```env
-ADMIN_JWT_SECRET=change-me-admin
-USER_JWT_SECRET=change-me-user
-# JWT_SECRET=shared-fallback-secret
+JWT_SECRET=change-me
 ```
 
 ## Endpoints
@@ -81,7 +79,7 @@ Common modules should not mount either auth plugin.
 
 - admin modules use `adminAuth` and `adminJwtPlugin` from `src/plugins/admin-auth.ts`
 - user/client modules use `userAuth` and `userJwtPlugin` from `src/plugins/user-auth.ts`
-- `ADMIN_JWT_SECRET` and `USER_JWT_SECRET` override the shared `JWT_SECRET`
+- both plugins use the same `JWT_SECRET`
 
 Expected authorization header:
 
@@ -105,6 +103,7 @@ src/
     error.ts
     user-auth.ts
   modules/
+    index.ts
     health/
       index.ts
       model.ts

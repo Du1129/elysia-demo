@@ -5,6 +5,7 @@
 这是一个 Bun + Elysia 的 TypeScript API 项目。运行入口是 `src/index.ts`，应用组装在 `src/app.ts`。
 
 - `src/modules/<feature>/`：按功能拆分模块。每个模块建议将路由放在 `index.ts`，请求/响应 schema 和类型放在 `model.ts`，业务逻辑放在 `service.ts`。
+- `src/modules/index.ts`：业务模块聚合入口。新增模块后在这里 `.use()`，不要让 `src/app.ts` 持续增加业务模块引用。
 - `src/plugins/`：可复用的 Elysia 插件，例如 JWT 鉴权和全局错误处理。
 - `src/db/`：Drizzle 数据库客户端和 PostgreSQL schema。
 - `drizzle/`：Drizzle 生成的 SQL migration 和元数据。
@@ -56,4 +57,4 @@ bun run typecheck
 
 ## 安全与配置提示
 
-不要提交真实密钥。`.env` 只保留在本地，用于配置 `PORT`、`ADMIN_JWT_SECRET`、`USER_JWT_SECRET` 和 PostgreSQL 的 `DB_*` 对象式环境变量。`JWT_SECRET` 仅作为本地共享 fallback；生产环境必须提供非默认的模块级 JWT secret。
+不要提交真实密钥。`.env` 只保留在本地，用于配置 `PORT`、`JWT_SECRET` 和 PostgreSQL 的 `DB_*` 对象式环境变量。生产环境必须提供非默认的 `JWT_SECRET`。
