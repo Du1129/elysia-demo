@@ -13,12 +13,9 @@ const isProduction = Bun.env.NODE_ENV === 'production'
 
 export namespace ErrorModel {
   export const errorResponse = t.Object({
-    success: t.Literal(false),
-    error: t.Object({
-      code: t.String(),
-      message: t.String(),
-      details: t.Optional(t.Unknown())
-    })
+    code: t.String(),
+    message: t.String(),
+    detail: t.Optional(t.Unknown())
   })
 
   export const models = {
@@ -29,14 +26,11 @@ export namespace ErrorModel {
 export const errorResponse = (
   code: ErrorCode,
   message: string,
-  details?: unknown
+  detail?: unknown
 ) => ({
-  success: false as const,
-  error: {
-    code,
-    message,
-    ...(details === undefined ? {} : { details })
-  }
+  code,
+  message,
+  ...(isProduction || detail === undefined ? {} : { detail })
 })
 
 const getErrorMessage = (error: unknown, fallback: string) => {

@@ -63,13 +63,13 @@ All API errors use the same response shape:
 
 ```json
 {
-  "success": false,
-  "error": {
-    "code": "NOT_FOUND",
-    "message": "Route not found"
-  }
+  "code": "NOT_FOUND",
+  "message": "Route not found"
 }
 ```
+
+Development responses may include a `detail` field. Production responses never
+include `detail`.
 
 ## Auth Plugins
 
