@@ -44,3 +44,27 @@ export const health = new Elysia({ prefix: '/health' })
       }
     }
   )
+  .get(
+    '/redis',
+    async ({ status }) => {
+      try {
+        return await HealthService.checkRedis()
+      } catch (error) {
+        const message =
+          error instanceof Error && error.message
+            ? error.message
+            : 'Redis connection failed'
+
+        return status(503, errorResponse('CACHE_ERROR', message))
+      }
+    },
+    {
+      response: {
+        200: 'HealthRedisResponse',
+        503: 'HealthErrorResponse'
+      },
+      detail: {
+        tags: ['Health']
+      }
+    }
+  )

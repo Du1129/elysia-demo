@@ -7,6 +7,7 @@ type ErrorCode =
   | 'NOT_FOUND'
   | 'VALIDATION_ERROR'
   | 'DATABASE_ERROR'
+  | 'CACHE_ERROR'
   | 'INTERNAL_SERVER_ERROR'
 
 const isProduction = Bun.env.NODE_ENV === 'production'

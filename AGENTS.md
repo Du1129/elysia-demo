@@ -6,8 +6,10 @@
 
 - `src/modules/<feature>/`：按功能拆分模块。每个模块建议将路由放在 `index.ts`，请求/响应 schema 和类型放在 `model.ts`，业务逻辑放在 `service.ts`。
 - `src/modules/index.ts`：业务模块聚合入口。新增模块后在这里 `.use()`，不要让 `src/app.ts` 持续增加业务模块引用。
-- `src/plugins/`：可复用的 Elysia 插件，例如 JWT 鉴权和全局错误处理。
+- `src/plugins/`：可复用的 Elysia 插件，例如 CORS、JWT 鉴权、队列挂载、定时任务、请求日志和全局错误处理。
+- `src/queues/`：BullMQ 队列定义。HTTP 层只负责入队，实际 worker 应独立进程启动。
 - `src/db/`：Drizzle 数据库客户端和 PostgreSQL schema。
+- `src/config/`：环境变量解析和基础设施配置，例如 Redis/BullMQ 连接配置。
 - `drizzle/`：Drizzle 生成的 SQL migration 和元数据。
 - `.agents/skills/elysiajs/`：项目内安装的 ElysiaJS agent skill 和示例。
 - 当前还没有测试目录；新增测试时可放在 `src/**/*.test.ts` 或 `tests/`。

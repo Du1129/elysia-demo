@@ -33,7 +33,13 @@ DB_SSL=false
 Configure Redis with:
 
 ```env
-REDIS_URL=redis://localhost:6379
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_USERNAME=
+REDIS_PASSWORD=
+REDIS_DB=0
+REDIS_TLS=false
+QUEUE_PREFIX=elysia-demo
 ```
 
 Configure JWT with:
@@ -42,11 +48,41 @@ Configure JWT with:
 JWT_SECRET=change-me
 ```
 
+Request logs use Pino. Configure logging with:
+
+```env
+LOG_LEVEL=debug
+```
+
+Configure CORS with:
+
+```env
+CORS_ORIGIN=*
+CORS_CREDENTIALS=true
+```
+
+Enable cron jobs with:
+
+```env
+CRON_ENABLED=false
+CRON_HEARTBEAT_PATTERN="0 */5 * * * *"
+```
+
+Configure Qiniu with:
+
+```env
+QINIU_ACCESS_KEY=
+QINIU_SECRET_KEY=
+QINIU_BUCKET=
+QINIU_DOMAIN=
+```
+
 ## Endpoints
 
 - `GET /`
 - `GET /health`
 - `GET /health/db`
+- `GET /health/redis`
 - `GET /openapi`
 - `GET /openapi/json`
 - `GET /users`
@@ -97,11 +133,18 @@ src/
     index.ts
     schema.ts
   lib/
+    qiniu.ts
     redis.ts
   plugins/
     admin-auth.ts
+    cors.ts
     error.ts
+    logger.ts
+    queue.ts
+    scheduler.ts
     user-auth.ts
+  queues/
+    index.ts
   modules/
     index.ts
     health/

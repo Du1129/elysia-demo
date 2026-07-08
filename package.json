@@ -21,9 +21,11 @@
     "@elysia/jwt": "^1.4.2",
     "@elysia/openapi": "^1.4.15",
     "@sinclair/typebox": "^0.34.8",
+    "bullmq": "^5.79.3",
     "drizzle-orm": "^0.45.2",
     "drizzle-typebox": "^0.3.3",
     "elysia": "latest",
+    "pino": "^10.3.1",
     "postgres": "^3.4.9",
     "qiniu": "^7.15.2",
     "redis": "^6.1.0"

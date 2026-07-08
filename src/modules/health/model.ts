@@ -16,11 +16,19 @@ export namespace HealthModel {
     port: t.Number()
   })
 
+  export const redisResponse = t.Object({
+    status: t.Literal('ok'),
+    latencyMs: t.Number(),
+    host: t.String(),
+    port: t.Number()
+  })
+
   export const databaseErrorResponse = ErrorModel.errorResponse
 
   export const models = {
     HealthCheckResponse: checkResponse,
     HealthDatabaseResponse: databaseResponse,
+    HealthRedisResponse: redisResponse,
     HealthErrorResponse: databaseErrorResponse
   } as const
 }

@@ -1,10 +1,8 @@
 import { createClient } from 'redis'
 
-const redisUrl = Bun.env.REDIS_URL ?? 'redis://localhost:6379'
+import { redisClientOptions } from '../config/redis'
 
-export const redis = createClient({
-  url: redisUrl
-})
+export const redis = createClient(redisClientOptions)
 
 redis.on('error', (error) => {
   console.error('Redis error:', error)
