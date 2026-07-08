@@ -5,9 +5,6 @@ import { userAuth, userJwtPlugin } from '../../plugins/user-auth'
 import { UserModel } from './model'
 import { UserService } from './service'
 
-const customElysia = () => {
-  return new Elysia();
-}
 const protectedUser = new Elysia()
   .model(UserModel.models)
   .use(userAuth)
@@ -28,7 +25,6 @@ const protectedUser = new Elysia()
     {
       response: {
         200: 'UserMeResponse',
-        401: 'UserErrorResponse',
         404: 'UserErrorResponse'
       },
       detail: {

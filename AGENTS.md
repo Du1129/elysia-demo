@@ -31,7 +31,7 @@ bun run build       # 打包 API 到 dist/
 数据库相关命令：
 
 ```bash
-bun run db:generate # 根据 src/db/schema.ts 生成 migration
+bun run db:generate # 根据 src/db/schema/index.ts 生成 migration
 bun run db:migrate  # 执行已生成的 migration
 bun run db:push     # 开发期直接同步 schema 到数据库
 bun run db:studio   # 打开 Drizzle Studio

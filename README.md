@@ -137,7 +137,9 @@ src/
   app.ts
   db/
     index.ts
-    schema.ts
+    schema/
+      index.ts
+      user.ts
   lib/
     qiniu.ts
     redis.ts

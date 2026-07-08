@@ -43,11 +43,11 @@ export const loggerPlugin = new Elysia({ name: 'logger-plugin' })
     log.info(
       {
         date,
-        route,
-        method: request.method,
-        path: url.pathname,
-        status: statusCode,
-        durationMs,
+        // route,
+        // method: request.method,
+        // path: url.pathname,
+        // status: statusCode,
+        // durationMs,
         request: {
           method: request.method,
           path: url.pathname
