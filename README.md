@@ -139,6 +139,8 @@ src/
   lib/
     qiniu.ts
     redis.ts
+  utils/
+    datetime.ts
   plugins/
     admin-auth.ts
     cors.ts

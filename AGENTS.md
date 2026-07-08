@@ -10,6 +10,7 @@
 - `src/queues/`：BullMQ 队列定义。HTTP 层只负责入队，实际 worker 应独立进程启动。
 - `src/db/`：Drizzle 数据库客户端和 PostgreSQL schema。
 - `src/config/`：环境变量解析和基础设施配置，例如 Redis/BullMQ 连接配置。
+- `src/utils/`：跨模块复用的纯工具函数，例如日期时间格式化。
 - `drizzle/`：Drizzle 生成的 SQL migration 和元数据。
 - `.agents/skills/elysiajs/`：项目内安装的 ElysiaJS agent skill 和示例。
 - 当前还没有测试目录；新增测试时可放在 `src/**/*.test.ts` 或 `tests/`。

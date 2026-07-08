@@ -1,6 +1,8 @@
 import { Elysia } from 'elysia'
 import pino, { type LevelWithSilent } from 'pino'
 
+import { formatDateTime } from '../utils/datetime'
+
 const logLevels = ['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent'] as const
 const requestStartTimes = new WeakMap<Request, number>()
 
@@ -17,7 +19,7 @@ const getLogLevel = (): LevelWithSilent => {
 
 export const log = pino({
   level: getLogLevel(),
-  timestamp: pino.stdTimeFunctions.isoTime,
+  timestamp: () => `,"time":"${formatDateTime()}"`,
   base: {
     service: 'elysia-demo'
   }
@@ -36,10 +38,11 @@ export const loggerPlugin = new Elysia({ name: 'logger-plugin' })
       : Math.round((performance.now() - startTime) * 100) / 100
     const statusCode = typeof set.status === 'number' ? set.status : 200
     const route = `${request.method} ${url.pathname}`
+    const date = formatDateTime()
 
     log.info(
       {
-        date: new Date().toISOString(),
+        date,
         route,
         method: request.method,
         path: url.pathname,
