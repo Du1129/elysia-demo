@@ -5,17 +5,16 @@ import { userAuth, userJwtPlugin } from '../../plugins/user-auth'
 import { UserModel } from './model'
 import { UserService } from './service'
 
+const customElysia = () => {
+  return new Elysia();
+}
 const protectedUser = new Elysia()
   .model(UserModel.models)
   .use(userAuth)
   .get(
     '/me',
-    ({ userAuth, status }) => {
-      if (!userAuth.profile) {
-        return status(401, errorResponse('UNAUTHORIZED', 'Unauthorized'))
-      }
-
-      const user = UserService.findById(userAuth.profile.sub)
+    ({ userProfile, status }) => {
+      const user = UserService.findById(userProfile.sub)
 
       if (!user) {
         return status(404, errorResponse('NOT_FOUND', 'User not found'))
@@ -23,7 +22,7 @@ const protectedUser = new Elysia()
 
       return {
         ...user,
-        tokenSubject: userAuth.profile.sub
+        tokenSubject: userProfile.sub
       }
     },
     {

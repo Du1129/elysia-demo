@@ -113,12 +113,14 @@ include `detail`.
 
 ## Auth Plugins
 
-Admin and client modules can opt into token parsing at their module entry.
+Admin and client modules can opt into token auth at their module entry.
 Use `adminAuth` for backend/admin modules and `userAuth` for client/user modules.
-Common modules should not mount either auth plugin.
+Both required auth plugins return `401` before the handler when the token is
+missing or invalid. Use `optionalAdminAuth` / `optionalUserAuth` only when a
+route needs optional token parsing without interception.
 
-- admin modules use `adminAuth` and `adminJwtPlugin` from `src/plugins/admin-auth.ts`
-- user/client modules use `userAuth` and `userJwtPlugin` from `src/plugins/user-auth.ts`
+- admin modules use `adminAuth`, `optionalAdminAuth`, and `adminJwtPlugin` from `src/plugins/admin-auth.ts`
+- user/client modules use `userAuth`, `optionalUserAuth`, and `userJwtPlugin` from `src/plugins/user-auth.ts`
 - both plugins use the same `JWT_SECRET`
 
 Expected authorization header:

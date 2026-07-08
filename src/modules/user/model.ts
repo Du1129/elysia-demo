@@ -31,7 +31,7 @@ export namespace UserModel {
     name: t.String(),
     email: t.String(),
     createdAt: t.Date(),
-    tokenSubject: t.String()
+    tokenSubject: t.String({error: 'tokenksnldkfjlskjdflkw'})
   })
 
   export const models = {
