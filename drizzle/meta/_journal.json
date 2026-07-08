@@ -8,6 +8,13 @@
       "when": 1783391264862,
       "tag": "0000_chemical_frightful_four",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1783501431350,
+      "tag": "0001_steady_korath",
+      "breakpoints": true
     }
   ]
 }

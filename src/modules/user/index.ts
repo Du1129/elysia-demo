@@ -11,7 +11,7 @@ const protectedUser = new Elysia()
   .get(
     '/me',
     ({ userProfile, status }) => {
-      const user = UserService.findById(userProfile.sub)
+      const user = UserService.findById(Number(userProfile.sub))
 
       if (!user) {
         return status(404, errorResponse('NOT_FOUND', 'User not found'))
@@ -52,7 +52,7 @@ const userToken = new Elysia()
 
       return {
         token: await userJwt.sign({
-          sub: user.id,
+          sub: String(user.id),
           name: user.name
         })
       }

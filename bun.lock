@@ -9,7 +9,7 @@
         "@elysia/cron": "^1.4.2",
         "@elysia/jwt": "^1.4.2",
         "@elysia/openapi": "^1.4.15",
-        "@sinclair/typebox": "^0.34.8",
+        "@sinclair/typebox": "0.34.8",
         "bullmq": "^5.79.3",
         "dayjs": "^1.11.21",
         "drizzle-orm": "^0.45.2",
@@ -22,10 +22,14 @@
       },
       "devDependencies": {
         "@types/bun": "latest",
+        "dotenv": "^17.4.2",
         "drizzle-kit": "^0.31.10",
         "typescript": "latest",
       },
     },
+  },
+  "overrides": {
+    "@sinclair/typebox": "0.34.8",
   },
   "packages": {
     "@borewit/text-codec": ["@borewit/text-codec@0.2.2", "http://20.1.1.253:4873/@borewit/text-codec/-/text-codec-0.2.2.tgz", {}, "sha512-DDaRehssg1aNrH4+2hnj1B7vnUGEjU6OIlyRdkMd0aUdIUvKXrJfXsy8LVtXAy7DRvYVluWbMspsRhz2lcW0mQ=="],
@@ -122,7 +126,7 @@
 
     "@redis/time-series": ["@redis/time-series@6.1.0", "http://20.1.1.253:4873/@redis/time-series/-/time-series-6.1.0.tgz", { "peerDependencies": { "@redis/client": "^6.1.0" } }, "sha512-uIDBtV8MmG/xpJsRqbGSO4iX6ryj37MLMP82lRpFvI7ykAVe5GyqgxigEbU+uZNv9kDPNMKw3dvI/S/J1BNBzA=="],
 
-    "@sinclair/typebox": ["@sinclair/typebox@0.34.49", "http://20.1.1.253:4873/@sinclair/typebox/-/typebox-0.34.49.tgz", {}, "sha512-brySQQs7Jtn0joV8Xh9ZV/hZb9Ozb0pmazDIASBkYKCjXrXU3mpcFahmK/z4YDhGkQvP9mWJbVyahdtU5wQA+A=="],
+    "@sinclair/typebox": ["@sinclair/typebox@0.34.8", "http://20.1.1.253:4873/@sinclair/typebox/-/typebox-0.34.8.tgz", {}, "sha512-PuVkV/MmJOsjem7FIlmuPhd2Owvq4v+ZVvN6wxWuT1NduGDzz2jlc4xIvPQSUE0yS13BRaYOVNq9rnIOkucGVA=="],
 
     "@tokenizer/inflate": ["@tokenizer/inflate@0.4.1", "http://20.1.1.253:4873/@tokenizer/inflate/-/inflate-0.4.1.tgz", { "dependencies": { "debug": "^4.4.3", "token-types": "^6.1.1" } }, "sha512-2mAv+8pkG6GIZiF1kNg1jAjh27IDxEPKwdGul3snfztFerfPGI1LjDezZp3i7BElXompqEtPmoPx6c2wgtWsOA=="],
 
@@ -179,6 +183,8 @@
     "detect-libc": ["detect-libc@2.1.2", "http://20.1.1.253:4873/detect-libc/-/detect-libc-2.1.2.tgz", {}, "sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ=="],
 
     "digest-header": ["digest-header@1.1.0", "http://20.1.1.253:4873/digest-header/-/digest-header-1.1.0.tgz", {}, "sha512-glXVh42vz40yZb9Cq2oMOt70FIoWiv+vxNvdKdU8CwjLad25qHM3trLxhl9bVjdr6WaslIXhWpn0NO8T/67Qjg=="],
+
+    "dotenv": ["dotenv@17.4.2", "http://20.1.1.253:4873/dotenv/-/dotenv-17.4.2.tgz", {}, "sha512-nI4U3TottKAcAD9LLud4Cb7b2QztQMUEfHbvhTH09bqXTxnSie8WnjPALV/WMCrJZ6UV/qHJ6L03OqO3LcdYZw=="],
 
     "drizzle-kit": ["drizzle-kit@0.31.10", "http://20.1.1.253:4873/drizzle-kit/-/drizzle-kit-0.31.10.tgz", { "dependencies": { "@drizzle-team/brocli": "^0.10.2", "@esbuild-kit/esm-loader": "^2.5.5", "esbuild": "^0.25.4", "tsx": "^4.21.0" }, "bin": { "drizzle-kit": "bin.cjs" } }, "sha512-7OZcmQUrdGI+DUNNsKBn1aW8qSoKuTH7d0mYgSP8bAzdFzKoovxEFnoGQp2dVs82EOJeYycqRtciopszwUf8bw=="],
 

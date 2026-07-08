@@ -1,32 +1,52 @@
 import type { UserModel } from './model'
 
-const users: UserModel.User[] = [
+const now = new Date('2026-07-07T00:00:00.000Z')
+let nextUserId = 2
+
+const users: UserModel.UserRecord[] = [
   {
-    id: '018f3f79-7a13-7c0d-9d8e-fcc6e2f14a10',
+    id: 1,
+    parentId: null,
     name: 'July',
+    phone: '13800000000',
     email: 'july@example.com',
-    createdAt: new Date('2026-07-07T00:00:00.000Z')
+    password: 'password',
+    description: null,
+    status: 1,
+    avatarImgKey: null,
+    createdAt: now,
+    updatedAt: now
   }
 ]
 
+const toPublicUser = ({ password: _password, ...user }: UserModel.UserRecord): UserModel.User => user
+
 export abstract class UserService {
   static list() {
-    return users
+    return users.map(toPublicUser)
   }
 
-  static findById(id: string) {
-    return users.find((user) => user.id === id)
+  static findById(id: number) {
+    const user = users.find((user) => user.id === id)
+
+    return user ? toPublicUser(user) : undefined
   }
 
   static create(input: UserModel.CreateBody) {
+    const now = new Date()
     const user = {
-      id: crypto.randomUUID(),
+      id: nextUserId++,
       ...input,
-      createdAt: new Date()
+      parentId: input.parentId ?? null,
+      description: input.description ?? null,
+      status: input.status ?? 1,
+      avatarImgKey: input.avatarImgKey ?? null,
+      createdAt: now,
+      updatedAt: now
     }
 
     users.push(user)
 
-    return user
+    return toPublicUser(user)
   }
 }

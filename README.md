@@ -30,6 +30,14 @@ DB_PASSWORD=postgres
 DB_SSL=false
 ```
 
+Shared table columns live in `src/db/schema/common.ts`. Use
+`withBaseColumns(fields)` for `id`, `createdAt`, and `updatedAt`; use
+`withBaseColumns(fields, { softDelete: true })` when the table also needs
+`deletedAt`.
+Drizzle TypeBox helpers live in `src/db/utils.ts`; table-specific request and
+response schemas stay inside each feature module, for example
+`src/modules/user/model.ts`.
+
 Configure Redis with:
 
 ```env
@@ -93,9 +101,10 @@ QINIU_TOKEN_EXPIRES=3600
 - `GET /users/me` with `Authorization: Bearer <token>`
 - `GET /users/:id`
 - `POST /users/token/:id`
-- `POST /users` with JSON body `{ "name": "July", "email": "july@example.com" }`
+- `POST /users` with JSON body `{ "parentId": null, "name": "July", "phone": "13800000000", "email": "july@example.com", "password": "password123", "description": null, "status": 1, "avatarImgKey": null }`
 
-The seeded in-memory user id is `018f3f79-7a13-7c0d-9d8e-fcc6e2f14a10`.
+The seeded in-memory user id is `1`.
+User responses omit the `password` field.
 
 ## Error Response
 
@@ -138,8 +147,10 @@ src/
   db/
     index.ts
     schema/
+      common.ts
       index.ts
       user.ts
+    utils.ts
   lib/
     qiniu.ts
     redis.ts

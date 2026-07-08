@@ -8,7 +8,7 @@
 - `src/modules/index.ts`：业务模块聚合入口。新增模块后在这里 `.use()`，不要让 `src/app.ts` 持续增加业务模块引用。
 - `src/plugins/`：可复用的 Elysia 插件，例如 CORS、JWT 鉴权、队列挂载、定时任务、请求日志和全局错误处理。
 - `src/queues/`：BullMQ 队列定义。HTTP 层只负责入队，实际 worker 应独立进程启动。
-- `src/db/`：Drizzle 数据库客户端和 PostgreSQL schema。
+- `src/db/`：Drizzle 数据库客户端和 PostgreSQL schema；通用表字段 helper 放在 `src/db/schema/common.ts`。
 - `src/config/`：环境变量解析和基础设施配置，例如 Redis/BullMQ 连接配置。
 - `src/utils/`：跨模块复用的纯工具函数，例如日期时间格式化。
 - `drizzle/`：Drizzle 生成的 SQL migration 和元数据。

@@ -1,8 +1,14 @@
-import { pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
+import { integer, pgTable, text } from 'drizzle-orm/pg-core'
 
-export const users = pgTable('users', {
-  id: uuid('id').primaryKey().defaultRandom(),
+import { withBaseColumns } from './common'
+
+export const users = pgTable('users', withBaseColumns({
+  parentId: integer('parent_id'),
   name: text('name').notNull(),
+  phone: text('phone').notNull().unique(),
   email: text('email').notNull().unique(),
-  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow()
-})
+  password: text('password').notNull(),
+  description: text('description'),
+  status: integer('status').notNull().default(1),
+  avatarImgKey: text('avatar_img_key')
+}))
