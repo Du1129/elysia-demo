@@ -1,7 +1,5 @@
 import { t } from 'elysia'
 
-import { ErrorModel } from '../../plugins/error'
-
 export namespace HealthModel {
   export const checkResponse = t.Object({
     status: t.Literal('ok'),
@@ -23,12 +21,18 @@ export namespace HealthModel {
     port: t.Number()
   })
 
-  export const databaseErrorResponse = ErrorModel.errorResponse
+  export const mailResponse = t.Object({
+    status: t.Literal('ok'),
+    latencyMs: t.Number(),
+    host: t.String(),
+    port: t.Number(),
+    user: t.String()
+  })
 
   export const models = {
     HealthCheckResponse: checkResponse,
     HealthDatabaseResponse: databaseResponse,
     HealthRedisResponse: redisResponse,
-    HealthErrorResponse: databaseErrorResponse
+    HealthMailResponse: mailResponse
   } as const
 }

@@ -1,15 +1,17 @@
 import { Elysia } from 'elysia'
 
 import { errorResponse } from '../../plugins/error'
+import { commonModelsPlugin } from '../../plugins/models'
 import { userJwtPlugin } from '../../plugins/user-auth'
 import { BaseModel } from './model'
 import { BaseService } from './service'
 
-export const base = new Elysia({ name: 'base' })
+export const base = new Elysia({ prefix: '/base' })
+  .use(commonModelsPlugin)
   .model(BaseModel.models)
   .use(userJwtPlugin)
   .get(
-    '/base/captcha',
+    '/captcha',
     ({ query }) => BaseService.createCaptcha(query),
     {
       query: 'BaseCaptchaQuery',
@@ -48,13 +50,40 @@ export const base = new Elysia({ name: 'base' })
       body: 'BaseLoginBody',
       response: {
         200: 'BaseLoginResponse',
-        400: 'BaseErrorResponse',
-        401: 'BaseErrorResponse',
-        403: 'BaseErrorResponse'
+        400: 'ApiErrorResponse',
+        401: 'ApiErrorResponse',
+        403: 'ApiErrorResponse'
       },
       detail: {
         tags: ['Base'],
         description: '使用手机号或邮箱、密码和验证码登录，成功后返回用户 JWT。'
+      }
+    }
+  )
+  .post(
+    '/sms',
+    async ({ body, status }) => {
+      const result = await BaseService.sendSms(body)
+
+      if (result.err) {
+        return status(
+          result.err.status,
+          errorResponse(result.err.code, result.err.message)
+        )
+      }
+
+      return status(204, undefined)
+    },
+    {
+      body: 'BaseSmsBody',
+      response: {
+        204: 'ApiNoContentResponse',
+        429: 'ApiErrorResponse',
+        503: 'ApiErrorResponse'
+      },
+      detail: {
+        tags: ['Base'],
+        description: '发送邮箱验证码，同一邮箱同一场景一分钟内只能发送一次。'
       }
     }
   )

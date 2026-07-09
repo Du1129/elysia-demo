@@ -1,7 +1,7 @@
 import { jwt } from '@elysia/jwt'
 import { Elysia, t } from 'elysia'
 
-import { ErrorModel, errorResponse } from './error'
+import { errorResponse } from './error'
 
 const jwtSecret = Bun.env.JWT_SECRET ?? 'elysia-demo-secret-change-me'
 
@@ -24,8 +24,6 @@ export namespace UserAuthModel {
     email: t.String({ format: 'email' }),
     status: t.Number()
   })
-
-  export const unauthorizedResponse = ErrorModel.errorResponse
 }
 
 export const userJwtPlugin = new Elysia({ name: 'user-jwt-plugin' }).use(

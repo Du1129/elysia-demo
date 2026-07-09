@@ -1,5 +1,7 @@
 import { client } from '../../db'
 import { redisConfig } from '../../config/redis'
+import { mailConfig } from '../../config/mail'
+import { verifyMailConnection } from '../../lib/mail'
 import { getRedis } from '../../lib/redis'
 
 const startedAt = Date.now()
@@ -40,6 +42,21 @@ export abstract class HealthService {
       latencyMs: Math.round(performance.now() - started),
       host: redisConfig.host,
       port: redisConfig.port
+    }
+  }
+
+  // 通过 SMTP verify 确认邮件服务配置可用。
+  static async checkMail() {
+    const started = performance.now()
+
+    await verifyMailConnection()
+
+    return {
+      status: 'ok' as const,
+      latencyMs: Math.round(performance.now() - started),
+      host: mailConfig.host ?? '',
+      port: mailConfig.port,
+      user: mailConfig.user ?? ''
     }
   }
 }

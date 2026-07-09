@@ -3,7 +3,6 @@ import { createInsertSchema, createSelectSchema, createUpdateSchema } from 'driz
 
 import { users } from '../../db/schema'
 import { spread } from '../../db/utils'
-import { ErrorModel } from '../../plugins/error'
 
 export namespace UserModel {
   const nullableParentId = () => t.Union([t.Number({ minimum: 1 }), t.Null()])
@@ -73,8 +72,6 @@ export namespace UserModel {
     token: t.String()
   })
 
-  export const notFoundResponse = ErrorModel.errorResponse
-
   export const meResponse = t.Object({
     ...publicUserFields,
     tokenUserId: t.Number()
@@ -85,8 +82,7 @@ export namespace UserModel {
     UserListResponse: listResponse,
     UserUpdateBody: updateBody,
     UserTokenResponse: tokenResponse,
-    UserMeResponse: meResponse,
-    UserErrorResponse: notFoundResponse
+    UserMeResponse: meResponse
   } as const
 
   export type User = Static<typeof user>

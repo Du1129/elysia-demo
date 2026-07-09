@@ -1,6 +1,6 @@
 import { t } from 'elysia'
 
-import { ErrorModel } from '../../plugins/error'
+import { SmsScene } from '../../enums'
 
 export namespace BaseModel {
   export const captchaQuery = t.Object({
@@ -26,16 +26,20 @@ export namespace BaseModel {
     token: t.String()
   })
 
-  export const errorResponse = ErrorModel.errorResponse
+  export const smsBody = t.Object({
+    email: t.String({ format: 'email' }),
+    scene: t.Union([t.Literal(SmsScene.regist), t.Literal(SmsScene.reset)])
+  })
 
   export const models = {
     BaseCaptchaQuery: captchaQuery,
     BaseCaptchaResponse: captchaResponse,
     BaseLoginBody: loginBody,
     BaseLoginResponse: loginResponse,
-    BaseErrorResponse: errorResponse
+    BaseSmsBody: smsBody
   } as const
 
   export type CaptchaQuery = typeof captchaQuery.static
   export type LoginBody = typeof loginBody.static
+  export type SmsBody = typeof smsBody.static
 }

@@ -55,7 +55,11 @@ src/
 │       └── user.ts           # users 表
 ├── lib/
 │   ├── redis.ts              # Redis 客户端（懒连接）
+│   ├── mail.ts               # Nodemailer SMTP 客户端
 │   └── qiniu.ts              # 七牛云上传令牌、公开 URL、BucketManager
+├── enums/
+│   ├── index.ts              # 枚举汇总导出
+│   └── sms.ts                # 邮箱验证码场景枚举
 ├── utils/
 │   ├── datetime.ts           # 日期时间格式化（基于 dayjs）
 │   └── crypto.ts             # MD5 工具
@@ -63,6 +67,7 @@ src/
 │   ├── cors.ts               # CORS（支持多域名、Credentials）
 │   ├── error.ts              # 全局错误处理 + errorResponse 工厂
 │   ├── logger.ts             # Pino 请求日志
+│   ├── models.ts             # 公共 OpenAPI / response model 注册
 │   ├── admin-auth.ts         # 后台 JWT 鉴权（adminJwt / adminAuth / optionalAdminAuth）
 │   ├── user-auth.ts          # 客户端 JWT 鉴权（userJwt / userAuth / optionalUserAuth）
 │   ├── queue.ts              # BullMQ 队列挂载（decorate + onStop）
@@ -71,8 +76,8 @@ src/
 │   └── index.ts              # BullMQ 队列定义（default 队列）
 └── modules/
     ├── index.ts              # 业务模块聚合入口
-    ├── base/                 # 登录、图形验证码
-    │   ├── index.ts          # 路由：GET /base/captcha, POST /login
+    ├── base/                 # 登录、图形验证码、邮箱验证码
+    │   ├── index.ts          # 路由：GET /base/captcha, POST /base/login, POST /base/sms
     │   ├── model.ts          # 请求/响应 TypeBox schema
     │   └── service.ts        # 验证码生成/校验、登录逻辑
     ├── health/               # 健康检查
@@ -135,8 +140,11 @@ src/
 
 | 变量                 | 默认值     | 说明                   |
 | -------------------- | ---------- | ---------------------- |
-| `CAPTCHA_EXPIRES_IN` | `300`      | 验证码过期时间（秒）   |
-| `CAPTCHA_KEY_PREFIX` | `captcha`  | 验证码 Redis 键前缀    |
+| `CAPTCHA_EXPIRES_IN` | `300`     | 图形验证码过期时间（秒） |
+| `CAPTCHA_KEY_PREFIX` | `captcha` | 图形验证码 Redis 键前缀  |
+| `SMS_CODE_EXPIRES_IN` | `300`    | 邮箱验证码过期时间（秒） |
+| `SMS_RATE_LIMIT_SECONDS` | `60` | 同一邮箱同一场景发送间隔 |
+| `SMS_KEY_PREFIX` | `sms`       | 邮箱验证码 Redis 键前缀  |
 
 ### 日志
 
@@ -157,6 +165,17 @@ src/
 | ----------------------- | ---------------- | -------------------------- |
 | `CRON_ENABLED`          | `false`          | 是否启用心跳定时任务       |
 | `CRON_HEARTBEAT_PATTERN` | `0 */5 * * * *` | 心跳 cron 表达式（秒级）   |
+
+### 邮件服务（SMTP）
+
+| 变量            | 默认值 | 说明                               |
+| --------------- | ------ | ---------------------------------- |
+| `SMTP_HOST`     | —      | SMTP 服务器地址                    |
+| `SMTP_PORT`     | `465`  | SMTP 端口                          |
+| `SMTP_SECURE`   | `true` | 是否使用 TLS，465 通常为 true      |
+| `SMTP_USER`     | —      | SMTP 用户名                        |
+| `SMTP_PASSWORD` | —      | SMTP 密码或邮箱授权码              |
+| `SMTP_FROM`     | —      | 默认发件人；为空时使用 `SMTP_USER` |
 
 ### BullMQ 队列
 
@@ -192,7 +211,8 @@ src/
 | 方法 | 路径            | 说明         | Auth |
 | ---- | --------------- | ------------ | ---- |
 | GET  | `/base/captcha` | 获取图形验证码 | 无   |
-| POST | `/login`        | 用户登录      | 无   |
+| POST | `/base/login`   | 用户登录      | 无   |
+| POST | `/base/sms`     | 发送邮箱验证码 | 无   |
 
 **获取验证码**：`GET /base/captcha?width=120&height=40&color=%23333`
 
@@ -206,7 +226,7 @@ src/
 }
 ```
 
-**登录**：`POST /login`，请求体：
+**登录**：`POST /base/login`，请求体：
 
 ```json
 {
@@ -219,6 +239,17 @@ src/
 
 `account` 支持手机号或邮箱。登录成功返回 JWT token。
 
+**发送邮箱验证码**：`POST /base/sms`，请求体：
+
+```json
+{
+  "email": "user@example.com",
+  "scene": "regist"
+}
+```
+
+`scene` 只支持 `regist` 和 `reset`，分别表示注册账号和忘记密码。同一邮箱同一场景 60 秒内只能发送一次。发送成功返回 `204 No Content`，无响应体。
+
 ### Health — 健康检查
 
 | 方法 | 路径         | 说明                         | Auth |
@@ -226,6 +257,7 @@ src/
 | GET  | `/health`    | 服务状态（uptime）           | 无   |
 | GET  | `/health/db` | 数据库连通性 + 延迟          | 无   |
 | GET  | `/health/redis` | Redis 连通性 + 延迟       | 无   |
+| GET  | `/health/mail` | SMTP 邮件服务连通性 + 延迟 | 无   |
 
 ### Users — 用户管理
 
@@ -258,8 +290,11 @@ JWT payload 结构：
 
 ```json
 {
-  "sub": "1",
-  "name": "July"
+  "userId": 1,
+  "name": "July",
+  "phone": "13800000000",
+  "email": "july@example.com",
+  "status": 1
 }
 ```
 

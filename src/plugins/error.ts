@@ -1,14 +1,6 @@
 import { Elysia, t } from 'elysia'
 
-type ErrorCode =
-  | 'BAD_REQUEST'
-  | 'UNAUTHORIZED'
-  | 'FORBIDDEN'
-  | 'NOT_FOUND'
-  | 'VALIDATION_ERROR'
-  | 'DATABASE_ERROR'
-  | 'CACHE_ERROR'
-  | 'INTERNAL_SERVER_ERROR'
+import type { ErrorCode } from '../model'
 
 const isProduction = Bun.env.NODE_ENV === 'production'
 
@@ -47,7 +39,7 @@ export const errorHandler = new Elysia({ name: 'error-handler' }).onError(
       case 'VALIDATION':
         set.status = 422
 
-        return errorResponse('VALIDATION_ERROR', 'Validation failed', {
+        return errorResponse('VALIDATION_ERROR', '参数格式不正确', {
           on: error.type,
           errors: error.all.map((item) => ({
             path: item.path,
@@ -59,17 +51,17 @@ export const errorHandler = new Elysia({ name: 'error-handler' }).onError(
       case 'NOT_FOUND':
         set.status = 404
 
-        return errorResponse('NOT_FOUND', 'Route not found')
+        return errorResponse('NOT_FOUND', '接口不存在')
 
       case 'PARSE':
         set.status = 400
 
-        return errorResponse('BAD_REQUEST', 'Invalid request body')
+        return errorResponse('BAD_REQUEST', '请求参数不正确')
 
       case 'INVALID_COOKIE_SIGNATURE':
         set.status = 400
 
-        return errorResponse('BAD_REQUEST', 'Invalid cookie signature')
+        return errorResponse('BAD_REQUEST', '无效的Cookie')
 
       case 'INTERNAL_SERVER_ERROR':
       case 'UNKNOWN':
@@ -80,8 +72,8 @@ export const errorHandler = new Elysia({ name: 'error-handler' }).onError(
         return errorResponse(
           'INTERNAL_SERVER_ERROR',
           isProduction
-            ? 'Internal server error'
-            : getErrorMessage(error, 'Internal server error')
+            ? '服务器异常'
+            : getErrorMessage(error, '服务器异常')
         )
     }
   }

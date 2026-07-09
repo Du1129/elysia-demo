@@ -1,11 +1,13 @@
 import { Elysia } from 'elysia'
 
 import { errorResponse } from '../../plugins/error'
+import { commonModelsPlugin } from '../../plugins/models'
 import { userAuth, userJwtPlugin } from '../../plugins/user-auth'
 import { UserModel } from './model'
 import { UserService } from './service'
 
 const protectedUser = new Elysia()
+  .use(commonModelsPlugin)
   .model(UserModel.models)
   .use(userAuth)
   .get(
@@ -25,7 +27,7 @@ const protectedUser = new Elysia()
     {
       response: {
         200: 'UserMeResponse',
-        404: 'UserErrorResponse'
+        404: 'ApiErrorResponse'
       },
       detail: {
         tags: ['Users'],
@@ -40,6 +42,7 @@ const protectedUser = new Elysia()
   )
 
 const userToken = new Elysia()
+  .use(commonModelsPlugin)
   .model(UserModel.models)
   .use(userJwtPlugin)
   .post(
@@ -65,7 +68,7 @@ const userToken = new Elysia()
       params: UserModel.idParams,
       response: {
         200: 'UserTokenResponse',
-        404: 'UserErrorResponse'
+        404: 'ApiErrorResponse'
       },
       detail: {
         tags: ['Users'],
@@ -75,6 +78,7 @@ const userToken = new Elysia()
   )
 
 export const user = new Elysia({ prefix: '/users' })
+  .use(commonModelsPlugin)
   .model(UserModel.models)
   .get(
     '/',
@@ -106,7 +110,7 @@ export const user = new Elysia({ prefix: '/users' })
       params: UserModel.idParams,
       response: {
         200: 'UserResponse',
-        404: 'UserErrorResponse'
+        404: 'ApiErrorResponse'
       },
       detail: {
         tags: ['Users'],
