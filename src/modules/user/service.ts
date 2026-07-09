@@ -22,16 +22,19 @@ const users: UserModel.UserRecord[] = [
 const toPublicUser = ({ password: _password, ...user }: UserModel.UserRecord): UserModel.User => user
 
 export abstract class UserService {
+  // 返回脱敏后的用户列表。
   static list() {
     return users.map(toPublicUser)
   }
 
+  // 按自增 id 查找脱敏后的用户。
   static findById(id: number) {
     const user = users.find((user) => user.id === id)
 
     return user ? toPublicUser(user) : undefined
   }
 
+  // 创建内存用户并返回脱敏后的用户信息。
   static create(input: UserModel.CreateBody) {
     const now = new Date()
     const user = {

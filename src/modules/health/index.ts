@@ -14,7 +14,8 @@ export const health = new Elysia({ prefix: '/health' })
         200: 'HealthCheckResponse'
       },
       detail: {
-        tags: ['Health']
+        tags: ['Health'],
+        description: '检查 API 进程是否存活。'
       }
     }
   )
@@ -40,7 +41,8 @@ export const health = new Elysia({ prefix: '/health' })
         503: 'HealthErrorResponse'
       },
       detail: {
-        tags: ['Health']
+        tags: ['Health'],
+        description: '检查 PostgreSQL 连接状态和延迟。'
       }
     }
   )
@@ -64,7 +66,8 @@ export const health = new Elysia({ prefix: '/health' })
         503: 'HealthErrorResponse'
       },
       detail: {
-        tags: ['Health']
+        tags: ['Health'],
+        description: '检查 Redis 连接状态和延迟。'
       }
     }
   )

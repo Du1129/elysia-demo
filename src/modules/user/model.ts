@@ -77,7 +77,7 @@ export namespace UserModel {
 
   export const meResponse = t.Object({
     ...publicUserFields,
-    tokenSubject: t.String({ error: 'tokenksnldkfjlskjdflkw' })
+    tokenUserId: t.Number()
   })
 
   export const models = {

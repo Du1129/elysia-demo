@@ -5,6 +5,7 @@ import { getRedis } from '../../lib/redis'
 const startedAt = Date.now()
 
 export abstract class HealthService {
+  // 返回进程基础存活状态。
   static check() {
     return {
       status: 'ok' as const,
@@ -12,6 +13,7 @@ export abstract class HealthService {
     }
   }
 
+  // 通过简单查询确认 PostgreSQL 连接可用。
   static async checkDatabase() {
     const started = performance.now()
 
@@ -26,6 +28,7 @@ export abstract class HealthService {
     }
   }
 
+  // 通过 PING 确认 Redis 连接可用。
   static async checkRedis() {
     const started = performance.now()
     const redis = await getRedis()

@@ -11,7 +11,7 @@ const protectedUser = new Elysia()
   .get(
     '/me',
     ({ userProfile, status }) => {
-      const user = UserService.findById(Number(userProfile.sub))
+      const user = UserService.findById(userProfile.userId)
 
       if (!user) {
         return status(404, errorResponse('NOT_FOUND', 'User not found'))
@@ -19,7 +19,7 @@ const protectedUser = new Elysia()
 
       return {
         ...user,
-        tokenSubject: userProfile.sub
+        tokenUserId: userProfile.userId
       }
     },
     {
@@ -29,6 +29,7 @@ const protectedUser = new Elysia()
       },
       detail: {
         tags: ['Users'],
+        description: '读取当前登录用户信息。',
         security: [
           {
             bearerAuth: []
@@ -52,8 +53,11 @@ const userToken = new Elysia()
 
       return {
         token: await userJwt.sign({
-          sub: String(user.id),
-          name: user.name
+          userId: user.id,
+          name: user.name,
+          phone: user.phone,
+          email: user.email,
+          status: user.status
         })
       }
     },
@@ -64,7 +68,8 @@ const userToken = new Elysia()
         404: 'UserErrorResponse'
       },
       detail: {
-        tags: ['Users']
+        tags: ['Users'],
+        description: '按用户 id 生成测试用 JWT。'
       }
     }
   )
@@ -79,7 +84,8 @@ export const user = new Elysia({ prefix: '/users' })
         200: 'UserListResponse'
       },
       detail: {
-        tags: ['Users']
+        tags: ['Users'],
+        description: '获取用户列表。'
       }
     }
   )
@@ -103,7 +109,8 @@ export const user = new Elysia({ prefix: '/users' })
         404: 'UserErrorResponse'
       },
       detail: {
-        tags: ['Users']
+        tags: ['Users'],
+        description: '按用户 id 获取用户详情。'
       }
     }
   )
@@ -116,7 +123,8 @@ export const user = new Elysia({ prefix: '/users' })
         201: 'UserResponse'
       },
       detail: {
-        tags: ['Users']
+        tags: ['Users'],
+        description: '创建用户。'
       }
     }
   )

@@ -17,7 +17,8 @@ export const base = new Elysia({ name: 'base' })
         200: 'BaseCaptchaResponse'
       },
       detail: {
-        tags: ['Base']
+        tags: ['Base'],
+        description: '生成图形验证码，返回 captchaId、base64 图片数据和过期秒数。'
       }
     }
   )
@@ -26,17 +27,20 @@ export const base = new Elysia({ name: 'base' })
     async ({ body, status, userJwt }) => {
       const result = await BaseService.validateLogin(body)
 
-      if (!result.ok) {
+      if (result.err) {
         return status(
-          result.status,
-          errorResponse(result.code, result.message)
+          result.err.status,
+          errorResponse(result.err.code, result.err.message)
         )
       }
 
       return {
         token: await userJwt.sign({
-          sub: String(result.user.id),
-          name: result.user.name
+          userId: result.user.id,
+          name: result.user.name,
+          phone: result.user.phone,
+          email: result.user.email,
+          status: result.user.status
         })
       }
     },
@@ -49,7 +53,8 @@ export const base = new Elysia({ name: 'base' })
         403: 'BaseErrorResponse'
       },
       detail: {
-        tags: ['Base']
+        tags: ['Base'],
+        description: '使用手机号或邮箱、密码和验证码登录，成功后返回用户 JWT。'
       }
     }
   )

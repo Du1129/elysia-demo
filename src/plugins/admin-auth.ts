@@ -18,8 +18,11 @@ const getBearerToken = (authorization: string | undefined) =>
 
 export namespace AdminAuthModel {
   export const jwtPayload = t.Object({
-    sub: t.String({ minLength: 1 }),
-    name: t.Optional(t.String({ minLength: 1 }))
+    userId: t.Number({ minimum: 1 }),
+    name: t.Optional(t.String({ minLength: 1 })),
+    phone: t.String({ minLength: 1 }),
+    email: t.String({ format: 'email' }),
+    status: t.Number()
   })
 
   export const unauthorizedResponse = ErrorModel.errorResponse
