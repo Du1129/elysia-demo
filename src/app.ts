@@ -41,6 +41,10 @@ export const app = new Elysia()
             description: 'Health check endpoints'
           },
           {
+            name: 'Base',
+            description: 'Login, captcha, sms and register endpoints'
+          },
+          {
             name: 'Users',
             description: 'User endpoints'
           }

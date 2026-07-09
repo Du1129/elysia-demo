@@ -2,6 +2,7 @@ export type ErrorCode =
   | 'BAD_REQUEST'
   | 'UNAUTHORIZED'
   | 'FORBIDDEN'
+  | 'CONFLICT'
   | 'TOO_MANY_REQUESTS'
   | 'NOT_FOUND'
   | 'VALIDATION_ERROR'

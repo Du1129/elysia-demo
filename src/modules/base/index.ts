@@ -3,12 +3,14 @@ import { Elysia } from 'elysia'
 import { errorResponse } from '../../plugins/error'
 import { commonModelsPlugin } from '../../plugins/models'
 import { userJwtPlugin } from '../../plugins/user-auth'
+import { UserModel } from '../user/model'
 import { BaseModel } from './model'
 import { BaseService } from './service'
 
 export const base = new Elysia({ prefix: '/base' })
   .use(commonModelsPlugin)
   .model(BaseModel.models)
+  .model(UserModel.models)
   .use(userJwtPlugin)
   .get(
     '/captcha',
@@ -84,6 +86,33 @@ export const base = new Elysia({ prefix: '/base' })
       detail: {
         tags: ['Base'],
         description: '发送邮箱验证码，同一邮箱同一场景一分钟内只能发送一次。'
+      }
+    }
+  )
+  .post(
+    '/register',
+    async ({ body, status }) => {
+      const result = await BaseService.register(body)
+
+      if (result.err) {
+        return status(
+          result.err.status,
+          errorResponse(result.err.code, result.err.message)
+        )
+      }
+
+      return status(201, result.user)
+    },
+    {
+      body: 'BaseRegisterBody',
+      response: {
+        201: 'UserResponse',
+        400: 'ApiErrorResponse',
+        409: 'ApiErrorResponse'
+      },
+      detail: {
+        tags: ['Base'],
+        description: '使用手机号、邮箱、密码和邮箱验证码注册用户。'
       }
     }
   )

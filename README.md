@@ -77,7 +77,7 @@ src/
 └── modules/
     ├── index.ts              # 业务模块聚合入口
     ├── base/                 # 登录、图形验证码、邮箱验证码
-    │   ├── index.ts          # 路由：GET /base/captcha, POST /base/login, POST /base/sms
+    │   ├── index.ts          # 路由：GET /base/captcha, POST /base/login, POST /base/sms, POST /base/register
     │   ├── model.ts          # 请求/响应 TypeBox schema
     │   └── service.ts        # 验证码生成/校验、登录逻辑
     ├── health/               # 健康检查
@@ -213,6 +213,7 @@ src/
 | GET  | `/base/captcha` | 获取图形验证码 | 无   |
 | POST | `/base/login`   | 用户登录      | 无   |
 | POST | `/base/sms`     | 发送邮箱验证码 | 无   |
+| POST | `/base/register` | 用户注册     | 无   |
 
 **获取验证码**：`GET /base/captcha?width=120&height=40&color=%23333`
 
@@ -249,6 +250,19 @@ src/
 ```
 
 `scene` 只支持 `regist` 和 `reset`，分别表示注册账号和忘记密码。同一邮箱同一场景 60 秒内只能发送一次。发送成功返回 `204 No Content`，无响应体。
+
+**注册**：`POST /base/register`，请求体：
+
+```json
+{
+  "phone": "13800000000",
+  "email": "user@example.com",
+  "password": "password123",
+  "smsCode": "123456"
+}
+```
+
+注册使用 `regist` 场景的邮箱验证码。成功后密码以 MD5 写入数据库，用户名按时间戳生成，例如 `用户281234567890`。
 
 ### Health — 健康检查
 
@@ -343,7 +357,7 @@ JWT payload 结构：
 }
 ```
 
-错误码列表：`BAD_REQUEST`、`UNAUTHORIZED`、`FORBIDDEN`、`NOT_FOUND`、`VALIDATION_ERROR`、`DATABASE_ERROR`、`CACHE_ERROR`、`INTERNAL_SERVER_ERROR`。
+错误码列表：`BAD_REQUEST`、`UNAUTHORIZED`、`FORBIDDEN`、`CONFLICT`、`NOT_FOUND`、`VALIDATION_ERROR`、`DATABASE_ERROR`、`CACHE_ERROR`、`INTERNAL_SERVER_ERROR`。
 
 开发环境（`NODE_ENV !== 'production'`）的错误响应可能包含 `detail` 字段用于调试。
 

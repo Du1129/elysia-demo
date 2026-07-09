@@ -1,6 +1,7 @@
 import { t } from 'elysia'
 
 import { SmsScene } from '../../enums'
+import { UserModel } from '../user/model'
 
 export namespace BaseModel {
   export const captchaQuery = t.Object({
@@ -31,15 +32,24 @@ export namespace BaseModel {
     scene: t.Union([t.Literal(SmsScene.regist), t.Literal(SmsScene.reset)])
   })
 
+  export const registerBody = t.Object({
+    phone: UserModel.db.insert.phone,
+    email: UserModel.db.insert.email,
+    password: UserModel.db.insert.password,
+    smsCode: t.String({ minLength: 1 })
+  })
+
   export const models = {
     BaseCaptchaQuery: captchaQuery,
     BaseCaptchaResponse: captchaResponse,
     BaseLoginBody: loginBody,
     BaseLoginResponse: loginResponse,
-    BaseSmsBody: smsBody
+    BaseSmsBody: smsBody,
+    BaseRegisterBody: registerBody
   } as const
 
   export type CaptchaQuery = typeof captchaQuery.static
   export type LoginBody = typeof loginBody.static
   export type SmsBody = typeof smsBody.static
+  export type RegisterBody = typeof registerBody.static
 }
