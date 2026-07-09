@@ -137,6 +137,27 @@ export abstract class BaseService {
     return md5(inputPassword) === storedPassword
   }
 
+  // 校验邮箱验证码，只有正确时才删除验证码和发送限流锁。
+  static async verifySmsCode(
+    email: string,
+    scene: BaseModel.SmsBody['scene'],
+    smsCode: string
+  ) {
+    const redis = await getRedis()
+    const rateKey = smsRateKey(email, scene)
+    const codeKey = smsCodeKey(email, scene)
+    const storedSmsCode = await redis.get(codeKey)
+
+    if (storedSmsCode !== smsCode.trim()) return false
+
+    await Promise.all([
+      redis.del(rateKey),
+      redis.del(codeKey)
+    ])
+
+    return true
+  }
+
   // 执行登录前置校验，返回错误信息或已通过校验的用户。
   static async validateLogin(body: BaseModel.LoginBody) {
     const isCaptchaValid = await BaseService.verifyCaptcha(
@@ -224,20 +245,15 @@ export abstract class BaseService {
       return serviceError(409, 'CONFLICT', '手机号或邮箱已存在')
     }
 
-    const redis = await getRedis()
-    const rateKey = smsRateKey(body.email, SmsScene.regist)
-    const codeKey = smsCodeKey(body.email, SmsScene.regist)
-    const smsCode = await redis.get(codeKey)
+    const isSmsCodeValid = await BaseService.verifySmsCode(
+      body.email,
+      SmsScene.regist,
+      body.smsCode
+    )
 
-    if (smsCode !== body.smsCode.trim()) {
+    if (!isSmsCodeValid) {
       return serviceError(400, 'BAD_REQUEST', '邮箱验证码错误')
     }
-
-    // 验证码正确后才废弃，错误时保留验证码和限流锁。
-    await Promise.all([
-      redis.del(rateKey),
-      redis.del(codeKey)
-    ])
 
     try {
       const [user] = await db
@@ -260,6 +276,38 @@ export abstract class BaseService {
       }
 
       throw error
+    }
+  }
+
+  // 使用忘记密码验证码重置用户密码。
+  static async forgotPassword(body: BaseModel.ForgotPasswordBody) {
+    const user = await BaseService.findUserByAccount({
+      email: body.email
+    })
+
+    if (!user) {
+      return serviceError(404, 'NOT_FOUND', '用户不存在')
+    }
+
+    const isSmsCodeValid = await BaseService.verifySmsCode(
+      body.email,
+      SmsScene.reset,
+      body.smsCode
+    )
+
+    if (!isSmsCodeValid) {
+      return serviceError(400, 'BAD_REQUEST', '邮箱验证码错误')
+    }
+
+    await db
+      .update(users)
+      .set({
+        password: md5(body.password)
+      })
+      .where(eq(users.id, user.id))
+
+    return {
+      err: null
     }
   }
 }

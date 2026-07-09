@@ -77,7 +77,7 @@ src/
 └── modules/
     ├── index.ts              # 业务模块聚合入口
     ├── base/                 # 登录、图形验证码、邮箱验证码
-    │   ├── index.ts          # 路由：GET /base/captcha, POST /base/login, POST /base/sms, POST /base/register
+    │   ├── index.ts          # 路由：GET /base/captcha, POST /base/login, POST /base/sms, POST /base/register, POST /base/resetPassword
     │   ├── model.ts          # 请求/响应 TypeBox schema
     │   └── service.ts        # 验证码生成/校验、登录逻辑
     ├── health/               # 健康检查
@@ -214,6 +214,7 @@ src/
 | POST | `/base/login`   | 用户登录      | 无   |
 | POST | `/base/sms`     | 发送邮箱验证码 | 无   |
 | POST | `/base/register` | 用户注册     | 无   |
+| POST | `/base/resetPassword` | 忘记密码 | 无   |
 
 **获取验证码**：`GET /base/captcha?width=120&height=40&color=%23333`
 
@@ -263,6 +264,18 @@ src/
 ```
 
 注册使用 `regist` 场景的邮箱验证码。成功后密码以 MD5 写入数据库，用户名按时间戳生成，例如 `用户281234567890`。
+
+**忘记密码**：`POST /base/resetPassword`，请求体：
+
+```json
+{
+  "email": "user@example.com",
+  "password": "new-password123",
+  "smsCode": "123456"
+}
+```
+
+忘记密码使用 `reset` 场景的邮箱验证码。验证码错误时不会删除 Redis 中的验证码和发送频率锁；重置成功返回 `204 No Content`。
 
 ### Health — 健康检查
 

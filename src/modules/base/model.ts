@@ -39,17 +39,25 @@ export namespace BaseModel {
     smsCode: t.String({ minLength: 1 })
   })
 
+  export const forgotPasswordBody = t.Object({
+    email: UserModel.db.insert.email,
+    password: UserModel.db.insert.password,
+    smsCode: t.String({ minLength: 1 })
+  })
+
   export const models = {
     BaseCaptchaQuery: captchaQuery,
     BaseCaptchaResponse: captchaResponse,
     BaseLoginBody: loginBody,
     BaseLoginResponse: loginResponse,
     BaseSmsBody: smsBody,
-    BaseRegisterBody: registerBody
+    BaseRegisterBody: registerBody,
+    BaseForgotPasswordBody: forgotPasswordBody
   } as const
 
   export type CaptchaQuery = typeof captchaQuery.static
   export type LoginBody = typeof loginBody.static
   export type SmsBody = typeof smsBody.static
   export type RegisterBody = typeof registerBody.static
+  export type ForgotPasswordBody = typeof forgotPasswordBody.static
 }

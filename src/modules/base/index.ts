@@ -116,3 +116,30 @@ export const base = new Elysia({ prefix: '/base' })
       }
     }
   )
+  .post(
+    '/resetPassword',
+    async ({ body, status }) => {
+      const result = await BaseService.forgotPassword(body)
+
+      if (result.err) {
+        return status(
+          result.err.status,
+          errorResponse(result.err.code, result.err.message)
+        )
+      }
+
+      return status(204, undefined)
+    },
+    {
+      body: 'BaseForgotPasswordBody',
+      response: {
+        204: 'ApiNoContentResponse',
+        400: 'ApiErrorResponse',
+        404: 'ApiErrorResponse'
+      },
+      detail: {
+        tags: ['Base'],
+        description: '使用邮箱验证码重置忘记密码。'
+      }
+    }
+  )
