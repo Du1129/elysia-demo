@@ -85,9 +85,9 @@ src/
     │   ├── model.ts          # 响应 schema
     │   └── service.ts        # DB / Redis 连通性检测
     └── user/                 # 用户管理
-        ├── index.ts          # 路由：CRUD + /me + token 签发
+        ├── index.ts          # 路由：GET /users/current
         ├── model.ts          # 请求/响应 TypeBox schema（drizzle-typebox 派生）
-        └── service.ts        # 用户增删查（当前为内存实现）
+        └── service.ts        # 当前用户查询
 ```
 
 ### 模块约定
@@ -290,13 +290,7 @@ src/
 
 | 方法   | 路径              | 说明               | Auth         |
 | ------ | ----------------- | ------------------ | ------------ |
-| GET    | `/users`          | 用户列表           | 无           |
-| GET    | `/users/me`       | 当前登录用户信息   | Bearer Token |
-| GET    | `/users/:id`      | 按 ID 查用户       | 无           |
-| POST   | `/users`          | 创建用户           | 无           |
-| POST   | `/users/token/:id`| 为用户签发 JWT    | 无           |
-
-> **注意**：当前 user 模块的数据存储在内存中，仅有一个种子用户（id = 1）。所有用户响应不包含 `password` 字段。
+| GET    | `/users/current`  | 当前登录用户信息   | Bearer Token |
 
 ## 鉴权
 
