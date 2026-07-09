@@ -85,7 +85,7 @@ src/
     │   ├── model.ts          # 响应 schema
     │   └── service.ts        # DB / Redis 连通性检测
     └── user/                 # 用户管理
-        ├── index.ts          # 路由：GET /users/current
+        ├── index.ts          # 路由：GET /user/current, POST /user/changePassword, POST /user/update
         ├── model.ts          # 请求/响应 TypeBox schema（drizzle-typebox 派生）
         └── service.ts        # 当前用户查询
 ```
@@ -290,7 +290,9 @@ src/
 
 | 方法   | 路径              | 说明               | Auth         |
 | ------ | ----------------- | ------------------ | ------------ |
-| GET    | `/users/current`  | 当前登录用户信息   | Bearer Token |
+| GET    | `/user/current`   | 当前登录用户信息   | Bearer Token |
+| POST   | `/user/changePassword` | 修改当前用户密码 | Bearer Token |
+| POST   | `/user/update`    | 修改当前用户资料   | Bearer Token |
 
 ## 鉴权
 

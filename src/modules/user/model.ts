@@ -1,5 +1,5 @@
 import { t, type Static } from 'elysia'
-import { createInsertSchema, createSelectSchema } from 'drizzle-typebox'
+import { createInsertSchema, createSelectSchema, createUpdateSchema } from 'drizzle-typebox'
 
 import { users } from '../../db/schema'
 import { spread } from '../../db/utils'
@@ -22,18 +22,42 @@ export namespace UserModel {
     })),
     select: spread(createSelectSchema(users, {
       email: email()
+    })),
+    update: spread(createUpdateSchema(users, {
+      parentId: nullableParentId(),
+      name: t.String({ minLength: 1 }),
+      phone: t.String({ minLength: 1 }),
+      email: email(),
+      description: nullableString(),
+      status: t.Number({ minimum: 0 }),
+      avatarImgKey: nullableString()
     }))
   } as const
 
   const { password: _password, ...publicUserFields } = db.select
+  const {
+    id: _id,
+    updatedAt: _updatedAt,
+    password: _updatePassword,
+    ...updatableUserFields
+  } = db.update
 
   export const userRecord = t.Object(db.select)
   export const user = t.Object(publicUserFields)
+  export const changePasswordBody = t.Object({
+    oldPassword: t.String({ minLength: 1 }),
+    newPassword: db.insert.password
+  })
+  export const updateBody = t.Object(updatableUserFields)
 
   export const models = {
-    UserResponse: user
+    UserResponse: user,
+    UserChangePasswordBody: changePasswordBody,
+    UserUpdateBody: updateBody
   } as const
 
   export type User = Static<typeof user>
   export type UserRecord = Static<typeof userRecord>
+  export type ChangePasswordBody = Static<typeof changePasswordBody>
+  export type UpdateBody = Static<typeof updateBody>
 }

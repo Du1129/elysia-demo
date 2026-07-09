@@ -45,7 +45,7 @@ export const app = new Elysia()
             description: 'Login, captcha, sms and register endpoints'
           },
           {
-            name: 'Users',
+            name: 'User',
             description: 'User endpoints'
           }
         ]
