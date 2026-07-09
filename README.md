@@ -47,6 +47,8 @@ REDIS_USERNAME=
 REDIS_PASSWORD=
 REDIS_DB=0
 REDIS_TLS=false
+CAPTCHA_EXPIRES_IN=300
+CAPTCHA_KEY_PREFIX=captcha
 QUEUE_PREFIX=elysia-demo
 ```
 
@@ -95,6 +97,8 @@ QINIU_TOKEN_EXPIRES=3600
 - `GET /health`
 - `GET /health/db`
 - `GET /health/redis`
+- `GET /base/captcha?width=120&height=40&color=%23333`
+- `POST /login` with JSON body `{ "account": "july@example.com", "password": "password123", "captchaId": "...", "captchaCode": "abcd" }`
 - `GET /openapi`
 - `GET /openapi/json`
 - `GET /users`
@@ -168,6 +172,10 @@ src/
     index.ts
   modules/
     index.ts
+    base/
+      index.ts
+      model.ts
+      service.ts
     health/
       index.ts
       model.ts
