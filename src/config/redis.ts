@@ -2,6 +2,8 @@ import type { ConnectionOptions } from 'bullmq'
 import type { RedisClientOptions } from 'redis'
 
 const optional = (value: string | undefined) => value || undefined
+const keepAliveInitialDelay = 5_000
+const reconnectDelay = (retries: number) => Math.min(retries * 100, 3_000)
 
 export const redisConfig = {
   host: Bun.env.REDIS_HOST ?? 'localhost',
@@ -17,11 +19,15 @@ export const redisClientOptions: RedisClientOptions = {
     ? {
       host: redisConfig.host,
       port: redisConfig.port,
-      tls: true
+      tls: true,
+      reconnectStrategy: reconnectDelay
     }
     : {
       host: redisConfig.host,
-      port: redisConfig.port
+      port: redisConfig.port,
+      keepAlive: true,
+      keepAliveInitialDelay,
+      reconnectStrategy: reconnectDelay
     },
   username: redisConfig.username,
   password: redisConfig.password,
@@ -34,5 +40,7 @@ export const queueConnection: ConnectionOptions = {
   username: redisConfig.username,
   password: redisConfig.password,
   db: redisConfig.database,
+  keepAlive: keepAliveInitialDelay,
+  retryStrategy: reconnectDelay,
   ...(redisConfig.tls ? { tls: {} } : {})
 }
